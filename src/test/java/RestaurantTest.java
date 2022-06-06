@@ -2,11 +2,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class RestaurantTest {
     Restaurant restaurant;
+    
+  //spoof variable acts as the menu selected by the user
+    List<Item> menuItem = new ArrayList<Item>();
+    
     public void restaurantCreate(){
         LocalTime openingTime = LocalTime.parse("10:30:00");
         LocalTime closingTime = LocalTime.parse("22:00:00");
@@ -37,6 +43,24 @@ class RestaurantTest {
     //<<<<<<<<<<<<<<<<<<<<<<<<<OPEN/CLOSED>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
+  //>>>>>>>>>>>>>>>>>>>>>>>>>>>ORDER VALUE<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    @Test
+    public void order_value_should_get_cumulative_total_when_collection_of_items_selected(){
+    	restaurantCreate();
+        menuItem = restaurant.getMenu();
+        assertEquals(506,restaurant.getOrderValue(menuItem));
+    }
+
+    @Test
+    public void order_value_should_reduce_cumulative_total_when_an_item_removed(){
+    	restaurantCreate();
+        menuItem = restaurant.getMenu();
+        int total = restaurant.getOrderValue(menuItem);
+        int afterTotal = menuItem.get(1).getPrice();
+        menuItem.remove(1);
+        assertEquals(total-afterTotal,restaurant.getOrderValue(menuItem));
+    }
+    
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     @Test
     public void adding_item_to_menu_should_increase_menu_size_by_1(){
